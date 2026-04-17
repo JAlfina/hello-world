@@ -10,6 +10,11 @@ func main() {
 
 	plan := amount / 12
 
-	fmt.Printf("===== Alifshop =====\nТовар: %s\nБренд: %s\nЦена: %d сум\nВ наличии: %t\nРассрочка: 12 мес → %d сум/мес\n", product, brand, amount, available, plan)
-	fmt.Print("====================")
+	fmt.Printf("===== Alifshop =====\n")
+	fmt.Printf("Товар:     %s\n", product)
+	fmt.Printf("Бренд:     %s\n", brand)
+	fmt.Printf("Цена:      %d сум\n", amount)
+	fmt.Printf("В наличии: %t\n", available)
+	fmt.Printf("Рассрочка: 12 мес → %d сум/мес\n", plan)
+	fmt.Println("====================")
 }
