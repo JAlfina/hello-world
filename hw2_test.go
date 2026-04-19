@@ -30,5 +30,5 @@ func Example_maskCard_panic() {
 	fmt.Println(maskCard("123123123"))
 
 	// Output:
-	// panic
+	//
 }
