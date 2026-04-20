@@ -1,72 +1,57 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"hello-world-1/internal"
+	"os"
+	"strconv"
+	"strings"
+
+	"product/internal/product"
+)
+
+const (
+	tiinToSum = 100
 )
 
 func main() {
-	var senderFirstName string
-	var senderLastName string
-	var receiverFirstName string
-	var receiverLastName string
-	var cardNumber string
-	var amount int
-	var input int
+	var productInfo product.Product
 
-	fmt.Print("Имя отправителя: ")
-	fmt.Scan(&senderFirstName)
+	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Фамилия отправителя: ")
-	fmt.Scan(&senderLastName)
+	fmt.Print("Product info: ")
+	productInfo.Name, _ = reader.ReadString('\n')
+	productInfo.Name = strings.TrimSpace(productInfo.Name)
 
-	fmt.Print("Имя получателя: ")
-	fmt.Scan(&receiverFirstName)
+	fmt.Print("Brand: ")
+	productInfo.Brand, _ = reader.ReadString('\n')
+	productInfo.Brand = strings.TrimSpace(productInfo.Brand)
 
-	fmt.Print("Фамилия получателя: ")
-	fmt.Scan(&receiverLastName)
+	fmt.Print("Price: ")
+	priceStr, _ := reader.ReadString('\n')
+	priceStr = strings.TrimSpace(priceStr)
+	priceStr = strings.ReplaceAll(priceStr, " ", "")
 
-	fmt.Print("Номер карты получателя (16 цифр): ")
-	fmt.Scan(&cardNumber)
-
-	if len(cardNumber) != 16 {
-		fmt.Println("Ошибка: номер карты должен содержать 16 цифр")
+	price, err := strconv.ParseFloat(priceStr, 64)
+	if err != nil {
+		fmt.Println("Вы ввели неправильную сумму")
 		return
 	}
 
-	fmt.Print("Введите сумму: ")
-	fmt.Scan(&amount)
+	fmt.Print("In stock? (0-false,1-true): ")
+	stockStr, _ := reader.ReadString('\n')
+	stockStr = strings.TrimSpace(stockStr)
 
-	if amount < 500 {
-		fmt.Println("Введите сумму больше 500 сум!")
+	productInfo.InStock, err = strconv.ParseBool(stockStr)
+	if err != nil {
+		fmt.Println("Некорректное значение для наличия. Введите 0 или 1")
 		return
 	}
 
-	if amount > 15000000 {
-		fmt.Println("Введите сумму меньше 15 000 000 сум!")
-		return
-	}
+	productInfo.Price = int(price * tiinToSum)
 
-	fmt.Print("Alif карта? (1-да/0-нет): ")
-	fmt.Scan(&input)
+	calculatedAmount := product.Calculate(productInfo.Price)
+	converted := product.Converter(productInfo, calculatedAmount)
 
-	if input != 0 && input != 1 {
-		fmt.Println("Некорректный ввод")
-		return
-	}
-
-	isAlif := input == 1
-
-	receipt := internal.BuildReceipt(
-		senderFirstName,
-		senderLastName,
-		receiverFirstName,
-		receiverLastName,
-		cardNumber,
-		amount,
-		isAlif,
-	)
-
-	fmt.Println()
-	fmt.Println(internal.FormatReceipt(receipt))
+	fmt.Println(converted)
 }
